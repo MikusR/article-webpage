@@ -13,7 +13,7 @@ class ArticleCollection
         $this->articles = $articles;
     }
 
-    public function getArticles(): array
+    public function all(): array
     {
         return $this->articles;
     }
