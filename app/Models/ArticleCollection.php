@@ -10,10 +10,20 @@ class ArticleCollection
 
     public function __construct(array $articles = [])
     {
-        $this->articles = $articles;
+        foreach ($articles as $article) {
+            if (!$article instanceof Article) {
+                continue;
+            }
+            $this->add($article);
+        }
     }
 
-    public function all(): array
+    public function add(Article $article): void
+    {
+        $this->articles[] = $article;
+    }
+
+    public function getAll(): array
     {
         return $this->articles;
     }

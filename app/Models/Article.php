@@ -4,13 +4,15 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Carbon\Carbon;
+
 class Article
 {
     private string $title;
     private string $description;
     private string $image;
-    private string $created;
-    private ?string $modified;
+    private Carbon $created;
+    private ?Carbon $modified;
     private ?int $id;
 
     public function __construct(
@@ -18,17 +20,17 @@ class Article
         string $description,
         string $image,
         string $created,
-        ?string $modified,
-        ?int $id
+        ?string $modified = null,
+        ?int $id = null
     ) {
         $this->title = $title;
         $this->description = $description;
         $this->image = $image;
-        $this->created = $created;
-        $this->modified = $modified;
+        $this->created = new Carbon($created);
+        $this->modified = $modified ? new Carbon($modified) : null;
         $this->id = $id;
     }
-    
+
     public function getTitle(): string
     {
         return $this->title;
@@ -44,12 +46,12 @@ class Article
         return $this->image;
     }
 
-    public function getCreated(): string
+    public function getCreated(): Carbon
     {
         return $this->created;
     }
 
-    public function getModified(): ?string
+    public function getModified(): ?Carbon
     {
         return $this->modified ?? null;
     }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App;
 
+use App\Controllers\AricleController;
 use FastRoute;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
@@ -13,18 +14,18 @@ class Application
     public function run(): void
     {
         $loader = new FilesystemLoader(__DIR__ . '/../resources/views/');
-        $twig = new Environment($loader, []);
-
-
+        $twig = new Environment($loader, ['debug' => true,]);
+        $twig->addExtension(new \Twig\Extension\DebugExtension());
         $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) {
-            $r->addRoute('GET', '/articles/{id:\d+}[/{title}]', 'get_article_handler');
+            $r->addRoute('GET', '/articles', [AricleController::class, 'index']);
+            $r->addRoute('GET', '/articles/{id:\d+}', [AricleController::class, 'show']);
         });
 
-// Fetch method and URI from somewhere
+        // Fetch method and URI from somewhere
         $httpMethod = $_SERVER['REQUEST_METHOD'];
         $uri = $_SERVER['REQUEST_URI'];
 
-// Strip query string (?foo=bar) and decode URI
+        // Strip query string (?foo=bar) and decode URI
         if (false !== $pos = strpos($uri, '?')) {
             $uri = substr($uri, 0, $pos);
         }
@@ -43,8 +44,17 @@ class Application
                 $handler = $routeInfo[1];
                 $vars = $routeInfo[2];
                 // ... call $handler with $vars
-
-
+                [$controller, $method] = $handler;
+                $response = (new $controller())->{$method}(...array_values($vars));
+                switch (true) {
+                    case $response instanceof ViewResponse:
+                        echo $twig->render($response->getViewName() . '.twig', $response->getData());
+                        break;
+                    case $response instanceof RedirectResponse:
+                        header('Location: ' . $response->getLocation());
+                        break;
+                }
+                $db = new Database();
                 break;
         }
     }

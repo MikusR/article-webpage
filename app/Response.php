@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace App;
 
-class Response
+interface Response
 {
-    private string $view;
-    private array $data;
+
 }
