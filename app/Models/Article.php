@@ -9,7 +9,7 @@ use Carbon\Carbon;
 class Article
 {
     private string $title;
-    private string $description;
+    private string $text;
     private string $image;
     private Carbon $created;
     private ?Carbon $modified;
@@ -17,14 +17,14 @@ class Article
 
     public function __construct(
         string $title,
-        string $description,
+        string $text,
         string $image,
         string $created,
         ?string $modified = null,
         ?int $id = null
     ) {
         $this->title = $title;
-        $this->description = $description;
+        $this->text = $text;
         $this->image = $image;
         $this->created = new Carbon($created);
         $this->modified = $modified ? new Carbon($modified) : null;
@@ -36,9 +36,9 @@ class Article
         return $this->title;
     }
 
-    public function getDescription(): string
+    public function getText(): string
     {
-        return $this->description;
+        return $this->text;
     }
 
     public function getImage(): string

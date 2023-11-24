@@ -18,7 +18,11 @@ class Application
         $twig->addExtension(new \Twig\Extension\DebugExtension());
         $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) {
             $r->addRoute('GET', '/articles', [AricleController::class, 'index']);
+            $r->addRoute('GET', '/articles/create', [AricleController::class, 'create']);
+            $r->addRoute('POST', '/articles', [AricleController::class, 'store']);
             $r->addRoute('GET', '/articles/{id:\d+}', [AricleController::class, 'show']);
+            $r->addRoute('GET', '/articles/{id:\d+}/edit', [AricleController::class, 'edit']);
+            $r->addRoute('POST', '/articles/{id:\d+}', [AricleController::class, 'update']);
         });
 
         // Fetch method and URI from somewhere

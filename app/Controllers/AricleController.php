@@ -6,8 +6,10 @@ namespace App\Controllers;
 
 use App\Models\Article;
 use App\Models\ArticleCollection;
+use App\RedirectResponse;
 use App\Response;
 use App\ViewResponse;
+use Carbon\Carbon;
 
 class AricleController extends BaseController
 {
@@ -36,15 +38,46 @@ class AricleController extends BaseController
 
     public function show(string $id): Response
     {
-        return new ViewResponse('articles/show', ['id' => $id]);
+        $data = $this->database->createQueryBuilder()
+            ->select('*')
+            ->from('articles')
+            ->where('id = :id')
+            ->setParameter('id', $id)
+            ->fetchAssociative();
+        $article = new Article(
+            $data['title'],
+            $data['text'],
+            $data['image'],
+            $data['date_created'],
+            $data['date_modified'],
+            (int)$data['id'],
+        );
+        return new ViewResponse('articles/show', ['article' => $article]);
     }
 
-    public function create()
+    public function create(): Response
     {
+        return new ViewResponse('articles/create');
     }
 
-    public function store()
+    public function store(): Response
     {
+        $this->database->createQueryBuilder()
+            ->insert('articles')
+            ->values(
+                [
+                    'title' => ':title',
+                    'text' => ':text',
+                    'image' => ':image',
+                    'date_created' => ':created'
+                ]
+            )->setParameters([
+                'title' => $_POST['title'],
+                'text' => $_POST['text'],
+                'image' => 'https://placehold.co/600x400',
+                'created' => Carbon::now('Europe/Riga')
+            ])->executeQuery();
+        return new RedirectResponse('/articles');
     }
 
     public function edit()
