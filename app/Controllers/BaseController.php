@@ -11,12 +11,11 @@ class BaseController
 
     public function __construct()
     {
-        //todo .env
         $connectionParams = [
-            'dbname' => 'articlesdb',
-            'user' => 'root',
-            'host' => 'localhost',
-            'driver' => 'pdo_mysql',
+            'dbname' => $_ENV['DBNAME'],
+            'user' => $_ENV['USER'],
+            'host' => $_ENV['HOST'],
+            'driver' => $_ENV['DRIVER'],
         ];
         $this->database = DriverManager::getConnection($connectionParams);
     }

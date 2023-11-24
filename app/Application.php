@@ -8,14 +8,19 @@ use App\Controllers\AricleController;
 use FastRoute;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
+use Dotenv\Dotenv;
 
 class Application
 {
     public function run(): void
     {
+        $dotenv = Dotenv::createImmutable(__DIR__ . '/../');
+        $dotenv->safeLoad();
+
         $loader = new FilesystemLoader(__DIR__ . '/../resources/views/');
         $twig = new Environment($loader, ['debug' => true,]);
         $twig->addExtension(new \Twig\Extension\DebugExtension());
+
         $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) {
             $r->addRoute('GET', '/articles', [AricleController::class, 'index']);
             $r->addRoute('GET', '/articles/create', [AricleController::class, 'create']);
@@ -59,7 +64,6 @@ class Application
                         header('Location: ' . $response->getLocation());
                         break;
                 }
-               
                 break;
         }
     }
