@@ -3,7 +3,7 @@
     <div>
         <h3><a href="/articles/{{ article.id }}">{{ article.title }}</a></h3>
         <form action="/articles/{{ article.id }}/delete" method="post">
-            <button type="submit" name="delete">X</button>
+            <button type="submit" onclick="return confirm('delete?')" name="delete">X</button>
         </form>
         <p>{{ article.created.format('Y-m-d H:i') }}</p>
         <br/>
