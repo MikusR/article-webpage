@@ -1,5 +1,11 @@
 {% for article in articles.all %}
-    <h3><a href="/articles/{{ article.id }}">{{ article.title }}</a></h3>
-    <p>{{ article.created.format('Y-m-d H:i') }}</p>
+    <div>
+        <h3><a href="/articles/{{ article.id }}">{{ article.title }}</a></h3>
+        <form action="/articles/{{ article.id }}/delete" method="post">
+            <button type="submit" name="delete">X</button>
+        </form>
+        <p>{{ article.created.format('Y-m-d H:i') }}</p>
+        <br/>
+    </div>
 {% endfor %}
 

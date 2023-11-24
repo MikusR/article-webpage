@@ -23,6 +23,7 @@ class Application
             $r->addRoute('GET', '/articles/{id:\d+}', [AricleController::class, 'show']);
             $r->addRoute('GET', '/articles/{id:\d+}/edit', [AricleController::class, 'edit']);
             $r->addRoute('POST', '/articles/{id:\d+}', [AricleController::class, 'update']);
+            $r->addRoute('POST', '/articles/{id:\d+}/delete', [AricleController::class, 'delete']);
         });
 
         // Fetch method and URI from somewhere
@@ -58,7 +59,7 @@ class Application
                         header('Location: ' . $response->getLocation());
                         break;
                 }
-                $db = new Database();
+               
                 break;
         }
     }

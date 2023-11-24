@@ -105,7 +105,7 @@ class AricleController extends BaseController
             ->update('articles')
             ->set('title', ':title')
             ->set('text', ':text')
-            ->where('id', ':id')
+            ->where('id = :id')
             ->setParameters([
                 'id' => $id,
                 'title' => $_POST['title'],
@@ -115,7 +115,14 @@ class AricleController extends BaseController
         return new RedirectResponse('/articles/' . $id);
     }
 
-    public function delete()
+    public function delete(string $id): Response
     {
+        $this->database->createQueryBuilder()
+            ->delete('articles')
+            ->where('id = :id')
+            ->setParameters(
+                ['id' => $id]
+            )->executeQuery();
+        return new RedirectResponse('/articles');
     }
 }
