@@ -80,12 +80,39 @@ class AricleController extends BaseController
         return new RedirectResponse('/articles');
     }
 
-    public function edit()
+    public function edit(string $id): Response
     {
+        $data = $this->database->createQueryBuilder()
+            ->select('*')
+            ->from('articles')
+            ->where('id = :id')
+            ->setParameter('id', $id)
+            ->fetchAssociative();
+        $article = new Article(
+            $data['title'],
+            $data['text'],
+            $data['image'],
+            $data['date_created'],
+            $data['date_modified'],
+            (int)$data['id'],
+        );
+        return new ViewResponse('articles/edit', ['article' => $article]);
     }
 
-    public function update()
+    public function update(string $id): Response
     {
+        $this->database->createQueryBuilder()
+            ->update('articles')
+            ->set('title', ':title')
+            ->set('text', ':text')
+            ->where('id', ':id')
+            ->setParameters([
+                'id' => $id,
+                'title' => $_POST['title'],
+                'text' => $_POST['text'],
+                'modified' => Carbon::now('Europe/Riga')
+            ])->executeQuery();
+        return new RedirectResponse('/articles/' . $id);
     }
 
     public function delete()
