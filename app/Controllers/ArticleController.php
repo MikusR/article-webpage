@@ -11,7 +11,7 @@ use App\Response;
 use App\ViewResponse;
 use Carbon\Carbon;
 
-class AricleController extends BaseController
+class ArticleController extends BaseController
 {
     public function index(): Response
     {
