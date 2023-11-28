@@ -7,11 +7,9 @@ namespace App\Services\Article;
 use App\Models\Article;
 use App\Repositories\ArticleRepository;
 use App\Repositories\MysqlArticleRepository;
-use Doctrine\DBAL\Connection;
 
 class ShowArticleService
 {
-    protected Connection $database;
     private ArticleREpository $articleRepository;
 
     public function __construct()
