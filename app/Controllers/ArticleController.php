@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
-use App\Models\Article;
-use App\Models\ArticleCollection;
 use App\RedirectResponse;
 use App\Response;
 use App\Services\Article\DeleteArticleService;
@@ -14,14 +12,14 @@ use App\Services\Article\ShowArticleService;
 use App\Services\Article\StoreArticleService;
 use App\Services\Article\UpdateArticleService;
 use App\ViewResponse;
-use Carbon\Carbon;
 
-class ArticleController extends BaseController
+class ArticleController
 {
     public function index(): Response
     {
         $service = new IndexArticleService();
         $articles = $service->execute();
+
         return new ViewResponse('articles/index', ['articles' => $articles]);
     }
 
@@ -42,6 +40,7 @@ class ArticleController extends BaseController
     {
         $service = new StoreArticleService();
         $service->execute($_POST['title'], $_POST['text']);
+
         return new RedirectResponse('/articles');
     }
 
@@ -49,6 +48,7 @@ class ArticleController extends BaseController
     {
         $service = new ShowArticleService();
         $article = $service->execute($id);
+
         return new ViewResponse('articles/edit', ['article' => $article]);
     }
 
@@ -56,6 +56,7 @@ class ArticleController extends BaseController
     {
         $service = new UpdateArticleService();
         $service->execute($id, $_POST['title'], $_POST['text']);
+
         return new RedirectResponse('/articles/' . $id);
     }
 
@@ -63,6 +64,7 @@ class ArticleController extends BaseController
     {
         $service = new DeleteArticleService();
         $service->execute($id);
+
         return new RedirectResponse('/articles');
     }
 }
