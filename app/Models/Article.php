@@ -60,4 +60,11 @@ class Article
     {
         return $this->id ?? null;
     }
+
+    public function update(array $data): void
+    {
+        $this->title = $data['title'] ?? $this->title;
+        $this->text = $data['text'] ?? $this->text;
+        $this->modified = Carbon::now();
+    }
 }

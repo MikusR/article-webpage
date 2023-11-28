@@ -52,9 +52,20 @@ class MysqlArticleRepository implements ArticleRepository
 
     public function save(Article $article): void
     {
-        $this->database->createQueryBuilder()
-            ->insert('articles')
-            ->values(
+        $builder = $this->database->createQueryBuilder();
+        if ($article->getId()) {
+            $builder->update('articles')
+                ->set('title', ':title')
+                ->set('text', ':text')
+                ->where('id = :id')
+                ->setParameters([
+                    'title' => $article->getTitle(),
+                    'text' => $article->getText(),
+                    'id' => $article->getId()
+                ])->executeQuery();
+        } else {
+            $builder->insert('articles');
+            $builder->values(
                 [
                     'title' => ':title',
                     'text' => ':text',
@@ -67,11 +78,17 @@ class MysqlArticleRepository implements ArticleRepository
                 'image' => $article->getImage(),
                 'created' => $article->getCreated()
             ])->executeQuery();
+        }
     }
 
     public function delete(Article $article): void
     {
-        // TODO: Implement delete() method.
+        $this->database->createQueryBuilder()
+            ->delete('articles')
+            ->where('id = :id')
+            ->setParameters(
+                ['id' => $article->getId()]
+            )->executeQuery();
     }
 
     private function buildModel(array $data): Article

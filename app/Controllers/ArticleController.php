@@ -8,9 +8,11 @@ use App\Models\Article;
 use App\Models\ArticleCollection;
 use App\RedirectResponse;
 use App\Response;
+use App\Services\Article\DeleteArticleService;
 use App\Services\Article\IndexArticleService;
 use App\Services\Article\ShowArticleService;
 use App\Services\Article\StoreArticleService;
+use App\Services\Article\UpdateArticleService;
 use App\ViewResponse;
 use Carbon\Carbon;
 
@@ -45,36 +47,22 @@ class ArticleController extends BaseController
 
     public function edit(string $id): Response
     {
-        $data = $this->database->createQueryBuilder()
-            ->select('*')
-            ->from('articles')
-            ->where('id = :id')
-            ->setParameter('id', $id)
-            ->fetchAssociative();
-        $article = new Article(
-            $data['title'],
-            $data['text'],
-            $data['image'],
-            $data['date_created'],
-            $data['date_modified'],
-            (int)$data['id'],
-        );
+        $service = new ShowArticleService();
+        $article = $service->execute($id);
         return new ViewResponse('articles/edit', ['article' => $article]);
     }
 
     public function update(string $id): Response
     {
+        $service = new UpdateArticleService();
+        $service->execute($id, $_POST['title'], $_POST['text']);
         return new RedirectResponse('/articles/' . $id);
     }
 
     public function delete(string $id): Response
     {
-        $this->database->createQueryBuilder()
-            ->delete('articles')
-            ->where('id = :id')
-            ->setParameters(
-                ['id' => $id]
-            )->executeQuery();
+        $service = new DeleteArticleService();
+        $service->execute($id);
         return new RedirectResponse('/articles');
     }
 }

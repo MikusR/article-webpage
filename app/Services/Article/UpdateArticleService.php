@@ -6,11 +6,9 @@ namespace App\Services\Article;
 
 use App\Repositories\ArticleRepository;
 use App\Repositories\MysqlArticleRepository;
-use Carbon\Carbon;
 
 class UpdateArticleService
 {
-
     private ArticleRepository $articleRepository;
 
     public function __construct()
@@ -18,9 +16,14 @@ class UpdateArticleService
         $this->articleRepository = new MysqlArticleRepository();
     }
 
-    public function execute(string $id): void
+    public function execute(string $id, string $title, string $text): void
     {
-        $this->articleRepository->save($id);
+        $article = $this->articleRepository->getById($id);
+        $article->update([
+            'title' => $title,
+            'text' => $text
+        ]);
+        $this->articleRepository->save($article);
     }
 
 }
