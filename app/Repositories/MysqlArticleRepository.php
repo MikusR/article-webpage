@@ -57,11 +57,13 @@ class MysqlArticleRepository implements ArticleRepository
             $builder->update('articles')
                 ->set('title', ':title')
                 ->set('text', ':text')
+                ->set('date_modified', ':modified')
                 ->where('id = :id')
                 ->setParameters([
                     'title' => $article->getTitle(),
                     'text' => $article->getText(),
-                    'id' => $article->getId()
+                    'id' => $article->getId(),
+                    'modified' => $article->getModified()
                 ])->executeQuery();
         } else {
             $builder->insert('articles');
