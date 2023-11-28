@@ -19,14 +19,14 @@ class Article
         string $title,
         string $text,
         string $image,
-        string $created,
+        ?string $created = null,
         ?string $modified = null,
         ?int $id = null
     ) {
         $this->title = $title;
         $this->text = $text;
         $this->image = $image;
-        $this->created = new Carbon($created);
+        $this->created = $created == null ? Carbon::now() : new Carbon($created);
         $this->modified = $modified ? new Carbon($modified) : null;
         $this->id = $id;
     }
