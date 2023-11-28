@@ -19,7 +19,7 @@ class ShowArticleService
         $this->articleRepository = new MysqlArticleRepository();
     }
 
-    public function execute(int $id): Article
+    public function execute(string $id): Article
     {
         return $this->articleRepository->getById($id);
     }

@@ -9,7 +9,7 @@ interface ArticleRepository
 {
     public function getAll(): ArticleCollection;
 
-    public function getById(int $id): ?Article;
+    public function getById(string $id): ?Article;
 
     public function save(Article $article): void;
 

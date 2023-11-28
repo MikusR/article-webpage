@@ -30,24 +30,24 @@ class MysqlArticleRepository implements ArticleRepository
             ->fetchAllAssociative();
 
         $articlesCollection = new ArticleCollection();
-        foreach ($articles as $article) {
+        foreach ($articles as $data) {
             $articlesCollection->add(
-                new Article(
-                    $article['title'],
-                    $article['text'],
-                    $article['image'],
-                    $article['date_created'],
-                    $article['date_modified'],
-                    (int)$article['id'],
-                )
+                $this->buildModel($data)
             );
         }
         return $articlesCollection;
     }
 
-    public function getById(int $id): ?Article
+    public function getById(string $id): ?Article
     {
-        // TODO: Implement getById() method.
+        $data = $this->database->createQueryBuilder()
+            ->select('*')
+            ->from('articles')
+            ->where('id = :id')
+            ->setParameter('id', $id)
+            ->fetchAssociative();
+
+        return $this->buildModel($data);
     }
 
     public function save(Article $article): void
@@ -72,5 +72,17 @@ class MysqlArticleRepository implements ArticleRepository
     public function delete(Article $article): void
     {
         // TODO: Implement delete() method.
+    }
+
+    private function buildModel(array $data): Article
+    {
+        return new Article(
+            $data['title'],
+            $data['text'],
+            $data['image'],
+            $data['date_created'],
+            $data['date_modified'],
+            (int)$data['id']
+        );
     }
 }

@@ -8,6 +8,9 @@ use App\Models\Article;
 use App\Models\ArticleCollection;
 use App\RedirectResponse;
 use App\Response;
+use App\Services\Article\IndexArticleService;
+use App\Services\Article\ShowArticleService;
+use App\Services\Article\StoreArticleService;
 use App\ViewResponse;
 use Carbon\Carbon;
 
@@ -15,25 +18,16 @@ class ArticleController extends BaseController
 {
     public function index(): Response
     {
-        return new ViewResponse('articles/index', ['articles' => $articlesCollection]);
+        $service = new IndexArticleService();
+        $articles = $service->execute();
+        return new ViewResponse('articles/index', ['articles' => $articles]);
     }
 
     public function show(string $id): Response
     {
-        $data = $this->database->createQueryBuilder()
-            ->select('*')
-            ->from('articles')
-            ->where('id = :id')
-            ->setParameter('id', $id)
-            ->fetchAssociative();
-        $article = new Article(
-            $data['title'],
-            $data['text'],
-            $data['image'],
-            $data['date_created'],
-            $data['date_modified'],
-            (int)$data['id'],
-        );
+        $service = new ShowArticleService();
+        $article = $service->execute($id);
+
         return new ViewResponse('articles/show', ['article' => $article]);
     }
 
@@ -44,6 +38,8 @@ class ArticleController extends BaseController
 
     public function store(): Response
     {
+        $service = new StoreArticleService();
+        $service->execute($_POST['title'], $_POST['text']);
         return new RedirectResponse('/articles');
     }
 
