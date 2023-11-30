@@ -5,10 +5,13 @@ declare(strict_types=1);
 namespace App;
 
 use App\Controllers\ArticleController;
+use App\Repositories\ArticleRepository;
+use App\Repositories\MysqlArticleRepository;
 use FastRoute;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 use Dotenv\Dotenv;
+use DI;
 
 class Application
 {
@@ -16,6 +19,12 @@ class Application
     {
         $dotenv = Dotenv::createImmutable(__DIR__ . '/../');
         $dotenv->safeLoad();
+
+        $builder = new DI\ContainerBuilder();
+        $builder->addDefinitions([
+            ArticleRepository::class => Di\create(MysqlArticleRepository::class)
+        ]);
+        $container = $builder->build();
 
         $loader = new FilesystemLoader(__DIR__ . '/../resources/views/');
         $twig = new Environment($loader, ['debug' => true,]);
@@ -55,7 +64,8 @@ class Application
                 $vars = $routeInfo[2];
                 // ... call $handler with $vars
                 [$controller, $method] = $handler;
-                $response = (new $controller())->{$method}(...array_values($vars));
+                $controller = $container->get($controller);
+                $response = ($controller())->{$method}(...array_values($vars));
                 switch (true) {
                     case $response instanceof ViewResponse:
                         echo $twig->render($response->getViewName() . '.twig', $response->getData());

@@ -6,15 +6,14 @@ namespace App\Services\Article;
 
 use App\Models\ArticleCollection;
 use App\Repositories\ArticleRepository;
-use App\Repositories\MysqlArticleRepository;
 
 class IndexArticleService
 {
     private ArticleRepository $articleRepository;
 
-    public function __construct()
+    public function __construct(ArticleRepository $repository)
     {
-        $this->articleRepository = new MysqlArticleRepository();
+        $this->articleRepository = $repository;
     }
 
     public function execute(): ArticleCollection

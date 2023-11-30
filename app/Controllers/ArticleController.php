@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controllers;
 
 use App\RedirectResponse;
+use App\Repositories\MysqlArticleRepository;
 use App\Response;
 use App\Services\Article\DeleteArticleService;
 use App\Services\Article\IndexArticleService;
@@ -15,9 +16,29 @@ use App\ViewResponse;
 
 class ArticleController
 {
+    private IndexArticleService $indexArticleService;
+    private ShowArticleService $showArticleService;
+    private DeleteArticleService $deleteArticleService;
+    private StoreArticleService $storeArticleService;
+    private UpdateArticleService $updateArticleService;
+
+    public function __construct(
+        IndexArticleService $indexArticleService,
+        ShowArticleService $showArticleService,
+        DeleteArticleService $deleteArticleService,
+        StoreArticleService $storeArticleService,
+        UpdateArticleService $updateArticleService
+    ) {
+        $this->indexArticleService = $indexArticleService;
+        $this->showArticleService = $showArticleService;
+        $this->deleteArticleService = $deleteArticleService;
+        $this->storeArticleService = $storeArticleService;
+        $this->updateArticleService = $updateArticleService;
+    }
+
     public function index(): Response
     {
-        $service = new IndexArticleService();
+        $service = $this->indexArticleService;
         $articles = $service->execute();
 
         return new ViewResponse('articles/index', ['articles' => $articles]);
