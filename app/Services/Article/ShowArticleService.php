@@ -6,15 +6,14 @@ namespace App\Services\Article;
 
 use App\Models\Article;
 use App\Repositories\ArticleRepository;
-use App\Repositories\MysqlArticleRepository;
 
 class ShowArticleService
 {
     private ArticleREpository $articleRepository;
 
-    public function __construct()
+    public function __construct(ArticleRepository $repository)
     {
-        $this->articleRepository = new MysqlArticleRepository();
+        $this->articleRepository = $repository;
     }
 
     public function execute(string $id): Article

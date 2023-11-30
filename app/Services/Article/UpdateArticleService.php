@@ -5,15 +5,14 @@ declare(strict_types=1);
 namespace App\Services\Article;
 
 use App\Repositories\ArticleRepository;
-use App\Repositories\MysqlArticleRepository;
 
 class UpdateArticleService
 {
     private ArticleRepository $articleRepository;
 
-    public function __construct()
+    public function __construct(ArticleRepository $repository)
     {
-        $this->articleRepository = new MysqlArticleRepository();
+        $this->articleRepository = $repository;
     }
 
     public function execute(string $id, string $title, string $text): void

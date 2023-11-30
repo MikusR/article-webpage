@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Controllers;
 
 use App\RedirectResponse;
-use App\Repositories\MysqlArticleRepository;
 use App\Response;
 use App\Services\Article\DeleteArticleService;
 use App\Services\Article\IndexArticleService;
@@ -38,16 +37,14 @@ class ArticleController
 
     public function index(): Response
     {
-        $service = $this->indexArticleService;
-        $articles = $service->execute();
+        $articles = $this->indexArticleService->execute();
 
         return new ViewResponse('articles/index', ['articles' => $articles]);
     }
 
     public function show(string $id): Response
     {
-        $service = new ShowArticleService();
-        $article = $service->execute($id);
+        $article = $this->showArticleService->execute($id);
 
         return new ViewResponse('articles/show', ['article' => $article]);
     }
@@ -59,32 +56,28 @@ class ArticleController
 
     public function store(): Response
     {
-        $service = new StoreArticleService();
-        $service->execute($_POST['title'], $_POST['text']);
+        $this->storeArticleService->execute($_POST['title'], $_POST['text']);
 
         return new RedirectResponse('/articles');
     }
 
     public function edit(string $id): Response
     {
-        $service = new ShowArticleService();
-        $article = $service->execute($id);
+        $article = $this->showArticleService->execute($id);
 
         return new ViewResponse('articles/edit', ['article' => $article]);
     }
 
     public function update(string $id): Response
     {
-        $service = new UpdateArticleService();
-        $service->execute($id, $_POST['title'], $_POST['text']);
+        $this->updateArticleService->execute($id, $_POST['title'], $_POST['text']);
 
         return new RedirectResponse('/articles/' . $id);
     }
 
     public function delete(string $id): Response
     {
-        $service = new DeleteArticleService();
-        $service->execute($id);
+        $this->deleteArticleService->execute($id);
 
         return new RedirectResponse('/articles');
     }

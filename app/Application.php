@@ -65,7 +65,7 @@ class Application
                 // ... call $handler with $vars
                 [$controller, $method] = $handler;
                 $controller = $container->get($controller);
-                $response = ($controller())->{$method}(...array_values($vars));
+                $response = ($controller)->{$method}(...array_values($vars));
                 switch (true) {
                     case $response instanceof ViewResponse:
                         echo $twig->render($response->getViewName() . '.twig', $response->getData());
